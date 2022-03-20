@@ -10,6 +10,8 @@ public class Godish : AITank
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();
     public Dictionary<GameObject, float> basesFound = new Dictionary<GameObject, float>();
 
+    public Dictionary<GameObject, float> potConsumableLocation = new Dictionary<GameObject, float>();
+
     public GameObject targetTankPosition;
     public GameObject consumablePosition;
     public GameObject basePosition;
@@ -44,7 +46,25 @@ public class Godish : AITank
     *******************************************************************************************************/
     public override void AITankUpdate()
     {
-        
+        //On every update the tank will stored last known location of consumables which will be stored as pot dictionary members
+        consumablesFound = GetAllConsumablesFound;
+        bool duplicate = false;
+        foreach(KeyValuePair<GameObject,float> consumable in consumablesFound) //It iterates through all the consumables found and stores them into it as long its not a dupe
+        {
+            foreach(GameObject item in potConsumableLocation.Keys) 
+            {
+                if(item.transform.position == consumable.Key.transform.position) 
+                {
+                    duplicate = true;
+                }
+            }
+            if (!duplicate) 
+            {
+                GenerateLastKnownPoint(consumable.Key, consumable.Value);
+                duplicate = false;
+            }
+        }
+        consumablesFound = null;
     }
 
     /*******************************************************************************************************       
@@ -53,5 +73,33 @@ public class Godish : AITank
     public override void AIOnCollisionEnter(Collision collision)
     {
 
+    }
+
+    private void GenerateLastKnownPoint(GameObject thing, float distance) //This adds the item to the dictionary by comparing game object names
+    {
+        GameObject point;
+        if (thing.name == "Fuel") 
+        { 
+            point = new GameObject("FuelLocation");
+            point.transform.position = thing.transform.position;
+            potConsumableLocation.Add(point, distance);
+        }
+        else if(thing.name == "Ammo") 
+        {
+            point = new GameObject("AmmoLocation");
+            point.transform.position = thing.transform.position;
+            potConsumableLocation.Add(point, distance);
+        }
+        else if (thing.name == "Health")
+        {
+            point = new GameObject("HealthLocation");
+            point.transform.position = thing.transform.position;
+            potConsumableLocation.Add(point, distance);
+        }
+    }
+
+    public void Wander() 
+    {
+        FollowPathToRandomPoint(1f);
     }
 }
