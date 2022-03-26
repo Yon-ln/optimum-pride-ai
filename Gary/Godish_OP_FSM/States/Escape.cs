@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Escape : BaseState
 {
-    private Godish Tank;//Change the script type eventually temporary name lol
-    public Escape(Godish tank) 
+    private GodishTank_OP_FSM Tank;//Change the script type eventually temporary name lol
+    public Escape(GodishTank_OP_FSM tank) 
     {
         this.Tank = tank;
     }

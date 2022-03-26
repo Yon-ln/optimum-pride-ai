@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class FindHealth : BaseState
 {
-    private Godish Tank;
-    public FindHealth(Godish tank)
+    private GodishTank_OP_FSM Tank;
+    public FindHealth(GodishTank_OP_FSM tank)
     {
         this.Tank = tank;
     }

@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Follow : BaseState
 {
-    private Godish Tank;
-    public Follow(Godish tank)
+    private GodishTank_OP_FSM Tank;
+    public Follow(GodishTank_OP_FSM tank)
     {
         this.Tank = tank;
     }
@@ -23,6 +23,7 @@ public class Follow : BaseState
 
     public override Type StateUpdate()
     {
+
         return null;
     }
 }

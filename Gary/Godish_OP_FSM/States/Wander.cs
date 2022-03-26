@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Wander : BaseState
 {
-    private Godish Tank;
+    private GodishTank_OP_FSM Tank;
 
-    public Wander(Godish tank)
+    public Wander(GodishTank_OP_FSM tank)
     {
         this.Tank = tank;
     }

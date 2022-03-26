@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class FindAmmo : BaseState
 {
-    private Godish Tank;
-    public FindAmmo(Godish tank)
+    private GodishTank_OP_FSM Tank;
+    public FindAmmo(GodishTank_OP_FSM tank)
     {
         this.Tank = tank;
     }
