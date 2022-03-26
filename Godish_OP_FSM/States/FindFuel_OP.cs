@@ -23,6 +23,7 @@ public class FindFuel_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
+        Tank.findFuel();
         return null;
     }
 }

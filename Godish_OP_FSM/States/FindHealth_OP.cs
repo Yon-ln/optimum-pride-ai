@@ -23,6 +23,7 @@ public class FindHealth_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
+        Tank.findHealth();
         return null;
     }
 }

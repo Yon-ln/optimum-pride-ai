@@ -78,7 +78,7 @@ public class GodishTank_OP_FSM : AITank
             Destroy(collision.gameObject);
         }
     }
-
+    //Gary
     private void GenerateLastKnownPoint(GameObject thing, float distance) //This adds the item to the dictionary by comparing game object names
     {
         GameObject point;
@@ -105,6 +105,7 @@ public class GodishTank_OP_FSM : AITank
         }
     }
 
+    //Gary
     public void Wander() 
     {
         FollowPathToRandomPoint(1f);
@@ -115,8 +116,67 @@ public class GodishTank_OP_FSM : AITank
         }
     }
 
+    //Gary
     public void Follow() 
     {
         FollowPathToPoint(targetTankPosition,1f);
+    }
+
+    //George
+    public void findAmmo()
+    {
+        GameObject loc = null;
+        float lowestDist = 1000.0f;
+        foreach (KeyValuePair<GameObject, float> item in potConsumableLocation)
+        {
+            if (item.Key.name == "AmmoLocation_Loc" && item.Value < lowestDist)
+            {
+                lowestDist = item.Value;
+                loc = item.Key;
+            }
+        }
+        if (loc != null)
+        {
+            FollowPathToPoint(loc, 1f);
+        }
+
+    }
+
+    //George
+    public void findFuel()
+    {
+        GameObject loc = null;
+        float lowestDist = 1000.0f;
+        foreach (KeyValuePair<GameObject, float> item in potConsumableLocation)
+        {
+            if (item.Key.name == "FuelLocation_Loc" && item.Value < lowestDist)
+            {
+                lowestDist = item.Value;
+                loc = item.Key;
+            }
+        }
+        if (loc != null)
+        {
+            FollowPathToPoint(loc, 1f);
+        }
+    }
+
+    //George
+    public void findHealth()
+    {
+        GameObject loc = null;
+        float lowestDist = 1000.0f;
+        foreach (KeyValuePair<GameObject, float> item in potConsumableLocation)
+        {
+            if (item.Key.name == "HealthLocation_Loc" && item.Value < lowestDist)
+            {
+                lowestDist = item.Value;
+                loc = item.Key;
+            }
+        }
+        if (loc != null)
+        {
+            FollowPathToPoint(loc, 1f);
+        }
     }
 }

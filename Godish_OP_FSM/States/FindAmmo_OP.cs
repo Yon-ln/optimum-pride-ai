@@ -23,6 +23,7 @@ public class FindAmmo_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
+        Tank.findAmmo();
         return null;
     }
 }
