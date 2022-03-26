@@ -5,8 +5,6 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-class TEMP{};
-
 public class SmartTank_OP_FSMRBS : AITank
 {
     public Dictionary<GameObject, float> targetTanksFound = new Dictionary<GameObject, float>();
@@ -45,8 +43,8 @@ public class SmartTank_OP_FSMRBS : AITank
         stats.Add("shoot", false);
         stats.Add("escape", false);
 
-        // rules.AddRule(new Rule("enemy found", "no ammo", typeof(TEMP)));
-        // rules.AddRule(new Rule("enemy found", "has ammo", typeof(TEMP)));
+        rules.AddRule(new Rule("enemy found", "no ammo", typeof(Escape), Rule.Predicate.And));
+        rules.AddRule(new Rule("enemy found", "has ammo", typeof(Shoot), Rule.Predicate.And));
     }
 
     /*******************************************************************************************************       
