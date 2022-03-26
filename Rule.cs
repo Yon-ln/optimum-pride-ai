@@ -1,34 +1,34 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Rule : MonoBehaviour
+public class Rule
 {
     public string antA;
     public string antB;
+    public List<string> antecendants = new List<string>();
     public Type consequentState;
     public Predicate compare;
 
     public enum Predicate
     { And, Or, nAnd }
 
-    public Rule(string antA, string antB, Type consequentState, Predicate compare){
-        this.antA = antA;
-        this.antB = antB;
+    public Rule(List<string> antecendants, Type consequentState, Predicate compare){
+        this.antecendants = antecendants;
         this.consequentState = consequentState;
         this.compare = compare;
 
     }
 
     public Type CheckRule(Dictionary<string, bool> stats){
-        bool antABool = stats[antA];
-        bool antBBool = stats[antB];
+        List<bool> antecendantBools = new List<bool>();
+        foreach(string i in antecendants){
+            antecendantBools.Add(stats[i]);
+        }
         
         switch(compare){
 
             case Predicate.And:
-                if(antABool && antBBool){
+                if(!antecendantBools.Contains(false)){ // if antecendant contains any false values, then it is true. then doing !true will make it false.
                     return consequentState;
 
                 } else
@@ -37,7 +37,7 @@ public class Rule : MonoBehaviour
                 }
 
             case Predicate.Or:
-            if(antABool || antBBool){
+            if(antecendantBools.Contains(true)){
                 return consequentState;
             }
             else{
@@ -45,7 +45,7 @@ public class Rule : MonoBehaviour
             }
 
             case Predicate.nAnd:
-            if(!antABool || !antBBool){
+            if(!antecendantBools.Contains(true)){
                 return consequentState;
             }
             else{
@@ -57,5 +57,7 @@ public class Rule : MonoBehaviour
             
         }
     }
+
+
 
 }

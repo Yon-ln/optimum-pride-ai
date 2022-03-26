@@ -45,12 +45,10 @@ public class SmartTank_OP_FSMRBS : AITank
         stats.Add("shoot", false);
         stats.Add("escape", false);
 
-        rules.AddRule(new Rule("enemy found", "no ammo", typeof(Escape), Rule.Predicate.And));
-        rules.AddRule(new Rule("enemy found", "has ammo", typeof(Shoot), Rule.Predicate.And));
-        rules.AddRule(new Rule("low fuel","", typeof(Temp), Rule.Predicate.And ));
-        rules.AddRule(new Rule("","", typeof(Temp), Rule.Predicate.And ));
-        rules.AddRule(new Rule("","", typeof(Temp), Rule.Predicate.And ));
-        rules.AddRule(new Rule("","", typeof(Temp), Rule.Predicate.And ));
+        rules.AddRule(new Rule(new List<string>{"enemy found", "no ammo"}, typeof(Escape), Rule.Predicate.And));
+        rules.AddRule(new Rule(new List<string>{"enemy found", "has ammo"}, typeof(Shoot), Rule.Predicate.And));
+        rules.AddRule(new Rule(new List<string>{"enemy found", "far", "ammo", "high fuel", "high health"}, typeof(Temp), Rule.Predicate.And));
+
     }
 
     /*******************************************************************************************************       
