@@ -20,13 +20,13 @@ public class GodishTank_OP_FSM : AITank
     {
         Dictionary<Type, BaseState> states = new Dictionary<Type, BaseState>
         {
-            { typeof(Wander), new Wander(this) },
-            { typeof(Escape), new Escape(this) },
-            { typeof(Follow), new Follow(this) },
-            { typeof(Shoot), new Shoot(this) },
-            { typeof(FindAmmo), new FindAmmo(this) },
-            { typeof(FindFuel), new FindFuel(this) },
-            { typeof(FindHealth), new FindHealth(this) }
+            { typeof(Wander_OP), new Wander_OP(this) },
+            { typeof(Escape_OP), new Escape_OP(this) },
+            { typeof(Follow_OP), new Follow_OP(this) },
+            { typeof(Shoot_OP), new Shoot_OP(this) },
+            { typeof(FindAmmo_OP), new FindAmmo_OP(this) },
+            { typeof(FindFuel_OP), new FindFuel_OP(this) },
+            { typeof(FindHealth_OP), new FindHealth_OP(this) }
         };
 
         GetComponent<FSM_OP>().setStates(states);
@@ -101,10 +101,5 @@ public class GodishTank_OP_FSM : AITank
     public void Wander() 
     {
         FollowPathToRandomPoint(1f);
-    }
-
-    public void FollowTank() 
-    {
-        
     }
 }
