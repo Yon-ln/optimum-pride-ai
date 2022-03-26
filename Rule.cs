@@ -35,20 +35,20 @@ public class Rule
                 }
 
             case Predicate.Or:
-            if(antecendantBools.Contains(true)){
-                return consequentState;
-            }
-            else{
-                return null;
-            }
+                if(antecendantBools.Contains(true)){
+                    return consequentState;
+                }
+                else{
+                    return null;
+                }
 
             case Predicate.nAnd:
-            if(!antecendantBools.Contains(true)){
-                return consequentState;
-            }
-            else{
-                return null;
-            }
+                if(!antecendantBools.Contains(true)){
+                    return consequentState;
+                }
+                else{
+                    return null;
+                }
 
             default:
                 return null;

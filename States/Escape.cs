@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Escape : BaseState
 {
-    private SmartTank_OP_FSMRBS Tank;//Change the script type eventually temporary name lol
+    private SmartTank_OP_FSMRBS Tank;
     public Escape(SmartTank_OP_FSMRBS tank) 
     {
         this.Tank = tank;
@@ -13,11 +13,13 @@ public class Escape : BaseState
 
     public override Type StateEnter()
     {
+        Tank.stats["Escape State"] = true;
         return null;
     }
 
     public override Type StateExit()
     {
+        Tank.stats["Escape State"] = false;
         return null;
     }
 

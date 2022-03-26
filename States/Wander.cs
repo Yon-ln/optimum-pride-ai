@@ -13,11 +13,13 @@ public class Wander : BaseState
 
     public override Type StateEnter()
     {
+        Tank.stats["Wander State"] = true;
         return null;
     }
 
     public override Type StateExit()
     {
+        Tank.stats["Wander State"] = false;
         return null;
     }
 

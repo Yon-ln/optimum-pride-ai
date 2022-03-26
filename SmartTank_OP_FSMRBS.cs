@@ -32,22 +32,28 @@ public class SmartTank_OP_FSMRBS : AITank
     {
         //This method runs once at the beginning when pressing play in Unity.
         InitStates();
-        stats.Add("enemy found", false);
-        stats.Add("has ammo", false);
-        stats.Add("low fuel", false);
-        stats.Add("low ammo", false);
-        stats.Add("low health", false);
-        stats.Add("high fuel", false);
-        stats.Add("high ammo", false);
-        stats.Add("high health", false);
-        stats.Add("find base", false);
-        stats.Add("follow", false);
-        stats.Add("shoot", false);
-        stats.Add("escape", false);
+        stats.Add("Enemy Found", false);
+        stats.Add("Enemy Is Found", false);
+        stats.Add("Has Ammo", false);
+        stats.Add("Low Fuel", false);
+        stats.Add("Low Ammo", false);
+        stats.Add("Low Health", false);
+        stats.Add("High Fuel", false);
+        stats.Add("High Ammo", false);
+        stats.Add("High Health", false);
+        stats.Add("Find Base", false);
 
-        rules.AddRule(new Rule(new List<string>{"enemy found", "no ammo"}, typeof(Escape), Rule.Predicate.And));
-        rules.AddRule(new Rule(new List<string>{"enemy found", "has ammo"}, typeof(Shoot), Rule.Predicate.And));
-        rules.AddRule(new Rule(new List<string>{"enemy found", "far", "ammo", "high fuel", "high health"}, typeof(Temp), Rule.Predicate.And));
+        stats.Add("Follow State", false);
+        stats.Add("Wander State", false);
+        stats.Add("Find Ammo State", false);
+        stats.Add("Find Fuel State", false);
+        stats.Add("Find Health State", false);
+        stats.Add("Shoot State", false);
+        stats.Add("Escape State", false);
+
+        rules.AddRule(new Rule(new List<string>{"Enemy Found", "No Ammo"}, typeof(Escape), Rule.Predicate.And));
+        rules.AddRule(new Rule(new List<string>{"Enemy Found", "Has Ammo"}, typeof(Shoot), Rule.Predicate.And));
+        rules.AddRule(new Rule(new List<string>{"Enemy Found", "Enemy Is Far", "Ammo", "High Fuel", "High Health"}, typeof(Temp), Rule.Predicate.And));
 
     }
 

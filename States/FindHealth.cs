@@ -13,11 +13,13 @@ public class FindHealth : BaseState
 
     public override Type StateEnter()
     {
+        Tank.stats["Find Health State"] = true;
         return null;
     }
 
     public override Type StateExit()
     {
+        Tank.stats["Find Health State"] = false;
         return null;
     }
 

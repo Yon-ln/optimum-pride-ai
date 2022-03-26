@@ -13,11 +13,15 @@ public class Shoot : BaseState
 
     public override Type StateEnter()
     {
+        Tank.stats["Shoot State"] = true;
+
         return null;
     }
 
     public override Type StateExit()
     {
+        Tank.stats["Shoot State"] = false;
+
         return null;
     }
 

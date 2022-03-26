@@ -13,11 +13,13 @@ public class FindFuel : BaseState
 
     public override Type StateEnter()
     {
+        Tank.stats["Find Fuel State"] = true;
         return null;
     }
 
     public override Type StateExit()
     {
+        Tank.stats["Find Fuel State"] = false;
         return null;
     }
 

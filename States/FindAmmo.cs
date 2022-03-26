@@ -13,11 +13,13 @@ public class FindAmmo : BaseState
 
     public override Type StateEnter()
     {
+        Tank.stats["Find Ammo State"] = true;
         return null;
     }
 
     public override Type StateExit()
     {
+        Tank.stats["Find Ammo State"] = false;
         return null;
     }
 

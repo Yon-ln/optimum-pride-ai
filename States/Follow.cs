@@ -13,11 +13,15 @@ public class Follow : BaseState
 
     public override Type StateEnter()
     {
+        Tank.stats["Follow State"] = true;
+
         return null;
     }
 
     public override Type StateExit()
     {
+        Tank.stats["Follow State"] = false;
+
         return null;
     }
 
