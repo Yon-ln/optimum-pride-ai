@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public class Rule
 {
-    public string antA;
-    public string antB;
     public List<string> antecendants = new List<string>();
     public Type consequentState;
     public Predicate compare;
