@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class FindFuel : BaseState
 {
-    private Godish Tank;
-    public FindFuel(Godish tank)
+    private SmartTank_OP_FSMRBS Tank;
+    public FindFuel(SmartTank_OP_FSMRBS tank)
     {
         this.Tank = tank;
     }

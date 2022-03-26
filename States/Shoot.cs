@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Shoot : BaseState
 {
-    private Godish Tank;
-    public Shoot(Godish tank)
+    private SmartTank_OP_FSMRBS Tank;
+    public Shoot(SmartTank_OP_FSMRBS tank)
     {
         this.Tank = tank;
     }
