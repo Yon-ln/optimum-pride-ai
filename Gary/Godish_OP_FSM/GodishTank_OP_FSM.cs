@@ -72,7 +72,10 @@ public class GodishTank_OP_FSM : AITank
     *******************************************************************************************************/
     public override void AIOnCollisionEnter(Collision collision)
     {
-
+        if (collision.gameObject.name.Contains("_Loc")) 
+        {
+            Destroy(collision.gameObject);
+        }
     }
 
     private void GenerateLastKnownPoint(GameObject thing, float distance) //This adds the item to the dictionary by comparing game object names
@@ -80,20 +83,23 @@ public class GodishTank_OP_FSM : AITank
         GameObject point;
         if (thing.name == "Fuel") 
         { 
-            point = new GameObject("FuelLocation");
+            point = new GameObject("FuelLocation_Loc");
             point.transform.position = thing.transform.position;
+            point.AddComponent<BoxCollider>();
             potConsumableLocation.Add(point, distance);
         }
         else if(thing.name == "Ammo") 
         {
-            point = new GameObject("AmmoLocation");
+            point = new GameObject("AmmoLocation_Loc");
             point.transform.position = thing.transform.position;
+            point.AddComponent<BoxCollider>();
             potConsumableLocation.Add(point, distance);
         }
         else if (thing.name == "Health")
         {
-            point = new GameObject("HealthLocation");
+            point = new GameObject("HealthLocation_Loc");
             point.transform.position = thing.transform.position;
+            point.AddComponent<BoxCollider>();
             potConsumableLocation.Add(point, distance);
         }
     }
