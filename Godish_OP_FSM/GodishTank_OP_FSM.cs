@@ -15,7 +15,10 @@ public class GodishTank_OP_FSM : AITank
     public GameObject targetTankPosition;
     public GameObject consumablePosition;
     public GameObject basePosition;
-    public GameObject fixedPoint;
+    public List<GameObject> fixedPoints = new List<GameObject>();
+
+    private List<Vector3> points = new List<Vector3>() { new Vector3(-65,0,49), new Vector3(-65,0,-71), new Vector3(57,0,-71), new Vector3(57,0,60) };
+    private int curPointLoc = 0;
 
     private void StartStateMachine() 
     {
@@ -40,6 +43,14 @@ public class GodishTank_OP_FSM : AITank
     public override void AITankStart()
     {
         StartStateMachine();
+        fixedPoints.Add(new GameObject("Point_0_OP"));
+        fixedPoints[0].transform.position = points[0];
+        fixedPoints.Add(new GameObject("Point_1_OP"));
+        fixedPoints[1].transform.position = points[1];
+        fixedPoints.Add(new GameObject("Point_2_OP"));
+        fixedPoints[2].transform.position = points[2];
+        fixedPoints.Add(new GameObject("Point_3_OP"));
+        fixedPoints[3].transform.position = points[3];
     }
 
     /*******************************************************************************************************       
@@ -108,13 +119,24 @@ public class GodishTank_OP_FSM : AITank
     //Gary
     private void CirculateTank() 
     {
-        
+        FollowPathToPoint(fixedPoints[curPointLoc],1f);
+        if(Vector3.Distance(transform.position, fixedPoints[curPointLoc].transform.position) < 10f) 
+        {
+            if(curPointLoc < 3) 
+            {
+                curPointLoc += 1;
+            }
+            else 
+            {
+                curPointLoc = 0;
+            }
+        }
     }
 
     //Gary
     public void Wander() 
     {
-        FollowPathToRandomPoint(1f);
+        CirculateTank();
         targetTanksFound = GetAllTargetTanksFound;
         if(targetTanksFound.Count > 0 && targetTanksFound.First().Key != null) 
         {

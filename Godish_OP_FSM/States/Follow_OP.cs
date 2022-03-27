@@ -38,7 +38,7 @@ public class Follow_OP : BaseState_OP
             }
             else
             {
-                return null;
+                return typeof(Shoot_OP);
             }
         }
         return null;
