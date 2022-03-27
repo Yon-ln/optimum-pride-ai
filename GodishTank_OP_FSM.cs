@@ -163,4 +163,19 @@ public class GodishTank_OP_FSM : AITank
             FollowPathToPoint(loc, 1f);
         }
     }
+
+    public float checkAmmo()
+    {
+        return GetAmmoLevel;
+    }
+
+    public float checkFuel()
+    {
+        return GetFuelLevel;
+    }
+
+    public float checkHealth()
+    {
+        return GetHealthLevel;
+    }
 }
