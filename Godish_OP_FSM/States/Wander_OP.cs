@@ -25,7 +25,22 @@ public class Wander_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
-        Tank.Wander();
+        if (Tank.checkFuel() < 20f)
+        {
+            return typeof(FindFuel_OP);
+        }
+        else if (Tank.checkHealth() < 20f)
+        {
+            return typeof(FindHealth_OP);
+        }
+        else if (Tank.checkFuel() < 20f)
+        {
+            return typeof(FindFuel_OP);
+        }
+        else
+        {
+            Tank.Wander();
+        }
         GameObject enTankPosition;//gets tank position if there is a tank so that it doesn't call an error on every update
         if(Tank.targetTankPosition != null) 
         {
