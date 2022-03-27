@@ -23,7 +23,22 @@ public class FindFuel_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
-        Tank.findFuel();
-        return null;
+        bool Anyfuel = false;
+        foreach (GameObject item in Tank.potConsumableLocation)
+        {
+            if (item.transform.name == "FuelLocation_Loc")
+            {
+                Anyfuel = true;
+            }
+        }
+        if (Anyfuel) 
+        {
+            Tank.findFuel();
+            return null;
+        }
+        else 
+        {
+            return typeof(Wander_OP);
+        }
     }
 }

@@ -23,7 +23,22 @@ public class FindHealth_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
-        Tank.findHealth();
-        return null;
+        bool Anyhealth = false;
+        foreach (GameObject item in Tank.potConsumableLocation)
+        {
+            if (item.transform.name == "HealthLocation_Loc")
+            {
+                Anyhealth = true;
+            }
+        }
+        if (Anyhealth)
+        {
+            Tank.findHealth();
+            return null;
+        }
+        else
+        {
+            return typeof(Wander_OP);
+        }
     }
 }

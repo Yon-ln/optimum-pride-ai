@@ -23,7 +23,22 @@ public class FindAmmo_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
-        Tank.findAmmo();
-        return null;
+        bool Anyammo = false;
+        foreach (GameObject item in Tank.potConsumableLocation)
+        {
+            if (item.transform.name == "AmmoLocation_Loc")
+            {
+                Anyammo = true;
+            }
+        }
+        if (Anyammo)
+        {
+            Tank.findAmmo();
+            return null;
+        }
+        else
+        {
+            return typeof(Wander_OP);
+        }
     }
 }

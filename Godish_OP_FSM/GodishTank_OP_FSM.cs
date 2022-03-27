@@ -10,7 +10,8 @@ public class GodishTank_OP_FSM : AITank
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();
     public Dictionary<GameObject, float> basesFound = new Dictionary<GameObject, float>();
 
-    public Dictionary<GameObject, float> potConsumableLocation = new Dictionary<GameObject, float>();
+    public List<GameObject> potConsumableLocation = new List<GameObject>();
+
 
     public GameObject targetTankPosition;
     public GameObject consumablePosition;
@@ -62,22 +63,32 @@ public class GodishTank_OP_FSM : AITank
         consumablesFound = GetAllConsumablesFound;
         targetTanksFound = GetAllTargetTanksFound;
         bool duplicate = false;
-        foreach(KeyValuePair<GameObject,float> consumable in consumablesFound) //It iterates through all the consumables found and stores them into it as long its not a dupe
+        foreach(GameObject consumable in consumablesFound.Keys) //It iterates through all the consumables found and stores them into it as long its not a dupe
         {
-            foreach(GameObject item in potConsumableLocation.Keys) 
+            foreach(GameObject item in potConsumableLocation) 
             {
-                if(item.transform.position == consumable.Key.transform.position) 
+                if(Vector3.Distance(item.gameObject.transform.position, consumable.transform.position) < 5f) 
                 {
                     duplicate = true;
                 }
             }
             if (!duplicate) 
             {
-                GenerateLastKnownPoint(consumable.Key, consumable.Value);
+                GenerateLastKnownPoint(consumable);
                 duplicate = false;
             }
         }
         consumablesFound = null;
+
+        foreach (GameObject item in potConsumableLocation)
+        {
+            if (Vector3.Distance(item.gameObject.transform.position, transform.position) < 5f)
+            {
+                Destroy(item);
+                potConsumableLocation.Remove(item);
+                Debug.Log("destroyed");
+            }
+        }
     }
 
     /*******************************************************************************************************       
@@ -85,48 +96,41 @@ public class GodishTank_OP_FSM : AITank
     *******************************************************************************************************/
     public override void AIOnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name.Contains("_Loc")) 
-        {
-            Destroy(collision.gameObject);
-        }
     }
     //Gary
-    private void GenerateLastKnownPoint(GameObject thing, float distance) //This adds the item to the dictionary by comparing game object names
+    private void GenerateLastKnownPoint(GameObject thing) //This adds the item to the dictionary by comparing game object names
     {
         GameObject point;
         if (thing.name == "Fuel") 
         { 
             point = new GameObject("FuelLocation_Loc");
             point.transform.position = thing.transform.position;
-            point.AddComponent<BoxCollider>();
-            potConsumableLocation.Add(point, distance);
+            potConsumableLocation.Add(point);
         }
         else if(thing.name == "Ammo") 
         {
             point = new GameObject("AmmoLocation_Loc");
             point.transform.position = thing.transform.position;
-            point.AddComponent<BoxCollider>();
-            potConsumableLocation.Add(point, distance);
+            potConsumableLocation.Add(point);
         }
         else if (thing.name == "Health")
         {
             point = new GameObject("HealthLocation_Loc");
             point.transform.position = thing.transform.position;
-            point.AddComponent<BoxCollider>();
-            potConsumableLocation.Add(point, distance);
+            potConsumableLocation.Add(point);
         }
     }
     //Gary
     private void CirculateTank() 
     {
-        FollowPathToPoint(fixedPoints[curPointLoc],1f);
-        if(Vector3.Distance(transform.position, fixedPoints[curPointLoc].transform.position) < 10f) 
+        FollowPathToPoint(fixedPoints[curPointLoc], 1f);
+        if (Vector3.Distance(transform.position, fixedPoints[curPointLoc].transform.position) < 10f)
         {
-            if(curPointLoc < 3) 
+            if (curPointLoc < 3)
             {
                 curPointLoc += 1;
             }
-            else 
+            else
             {
                 curPointLoc = 0;
             }
@@ -155,19 +159,18 @@ public class GodishTank_OP_FSM : AITank
     {
         GameObject loc = null;
         float lowestDist = 1000.0f;
-        foreach (KeyValuePair<GameObject, float> item in potConsumableLocation)
+        foreach (GameObject item in potConsumableLocation)
         {
-            if (item.Key.name == "AmmoLocation_Loc" && item.Value < lowestDist)
+            if (item.name == "AmmoLocation_Loc" && Vector3.Distance(transform.position, item.transform.position) < lowestDist)
             {
-                lowestDist = item.Value;
-                loc = item.Key;
+                lowestDist = Vector3.Distance(transform.position, item.transform.position);
+                loc = item;
             }
         }
         if (loc != null)
         {
             FollowPathToPoint(loc, 1f);
         }
-
     }
 
     //George
@@ -175,12 +178,12 @@ public class GodishTank_OP_FSM : AITank
     {
         GameObject loc = null;
         float lowestDist = 1000.0f;
-        foreach (KeyValuePair<GameObject, float> item in potConsumableLocation)
+        foreach (GameObject item in potConsumableLocation)
         {
-            if (item.Key.name == "FuelLocation_Loc" && item.Value < lowestDist)
+            if (item.name == "FuelLocation_Loc" && Vector3.Distance(transform.position, item.transform.position) < lowestDist)
             {
-                lowestDist = item.Value;
-                loc = item.Key;
+                lowestDist = Vector3.Distance(transform.position, item.transform.position);
+                loc = item;
             }
         }
         if (loc != null)
@@ -194,12 +197,12 @@ public class GodishTank_OP_FSM : AITank
     {
         GameObject loc = null;
         float lowestDist = 1000.0f;
-        foreach (KeyValuePair<GameObject, float> item in potConsumableLocation)
+        foreach (GameObject item in potConsumableLocation)
         {
-            if (item.Key.name == "HealthLocation_Loc" && item.Value < lowestDist)
+            if (item.name == "HealthLocation_Loc" && Vector3.Distance(transform.position, item.transform.position) < lowestDist)
             {
-                lowestDist = item.Value;
-                loc = item.Key;
+                lowestDist = Vector3.Distance(transform.position, item.transform.position);
+                loc = item;
             }
         }
         if (loc != null)

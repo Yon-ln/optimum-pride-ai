@@ -25,17 +25,27 @@ public class Wander_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
-        if (Tank.checkFuel() < 20f)
+        float lowestdist = 1000;
+        GameObject loc = null;
+        foreach(GameObject item in Tank.potConsumableLocation) 
+        {
+            if (Vector3.Distance(Tank.transform.position, item.transform.position) < lowestdist)
+            {
+                lowestdist = Vector3.Distance(Tank.transform.position, item.transform.position);
+                loc = item;
+            }
+        }
+        if (loc != null && loc.gameObject.name == "FuelLocation_Loc")
         {
             return typeof(FindFuel_OP);
         }
-        else if (Tank.checkHealth() < 20f)
+        else if (loc != null && loc.gameObject.name == "HealthLocation_Loc")
         {
             return typeof(FindHealth_OP);
         }
-        else if (Tank.checkFuel() < 20f)
+        else if (loc != null && loc.gameObject.name == "AmmoLocation_Loc")
         {
-            return typeof(FindFuel_OP);
+            return typeof(FindAmmo_OP);
         }
         else
         {
