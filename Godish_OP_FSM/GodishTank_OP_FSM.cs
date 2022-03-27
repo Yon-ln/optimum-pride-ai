@@ -15,6 +15,7 @@ public class GodishTank_OP_FSM : AITank
     public GameObject targetTankPosition;
     public GameObject consumablePosition;
     public GameObject basePosition;
+    public GameObject fixedPoint;
 
     private void StartStateMachine() 
     {
@@ -104,6 +105,11 @@ public class GodishTank_OP_FSM : AITank
             potConsumableLocation.Add(point, distance);
         }
     }
+    //Gary
+    private void CirculateTank() 
+    {
+        
+    }
 
     //Gary
     public void Wander() 
@@ -179,19 +185,27 @@ public class GodishTank_OP_FSM : AITank
             FollowPathToPoint(loc, 1f);
         }
     }
-
+    //George
     public float checkAmmo()
     {
         return GetAmmoLevel;
     }
-
+    //George
     public float checkFuel()
     {
         return GetFuelLevel;
     }
-
+    //George
     public float checkHealth()
     {
         return GetHealthLevel;
+    }
+    //Robbie
+    public void shoot()
+    {
+        if (targetTankPosition != null)
+        {
+            FireAtPoint(targetTankPosition);
+        }
     }
 }
