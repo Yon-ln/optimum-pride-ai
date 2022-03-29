@@ -3,28 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FindFuel : BaseState
+public class Escape_OP : BaseState_OP
 {
     private SmartTank_OP_FSMRBS Tank;
-    public FindFuel(SmartTank_OP_FSMRBS tank)
+    public Escape_OP(SmartTank_OP_FSMRBS tank) 
     {
         this.Tank = tank;
     }
 
     public override Type StateEnter()
     {
-        Tank.stats["Find Fuel State"] = true;
+        Tank.stats["Escape State"] = true;
+        Debug.Log("4");
+
         return null;
     }
 
     public override Type StateExit()
     {
-        Tank.stats["Find Fuel State"] = false;
+        Tank.stats["Escape State"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
+        foreach(var item in Tank.rules.GetRules){
+            if(item.CheckRule(Tank.stats) != null){
+                return item.CheckRule(Tank.stats);
+            }
+        }
+
         return null;
     }
 }

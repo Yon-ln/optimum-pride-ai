@@ -6,20 +6,21 @@ using UnityEngine;
 
 public class StateMachine_OP_FSM : MonoBehaviour
 {
-    private Dictionary<Type, BaseState> states;
+    private Dictionary<Type, BaseState_OP> states;
 
-    public BaseState currentState;
-    public BaseState CurrentState {
+    public BaseState_OP currentState;
+    public BaseState_OP CurrentState {
         get{ return currentState; }
         private set{ currentState = value; }
     }
 
-    public void SetStates(Dictionary<Type, BaseState> states){
+    public void SetStates(Dictionary<Type, BaseState_OP> states){
         this.states = states;
     }
 
-    public void UpdateStates(){
-        if(CurrentState != null){
+    private void Update()
+    {
+        if(CurrentState == null){
             CurrentState = states.Values.First();
         } else{
             var nextState = CurrentState.StateUpdate();
