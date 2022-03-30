@@ -39,15 +39,15 @@ public class Wander_OPRBS : BaseState_OPRBS
         }
         if (loc != null && loc.gameObject.name == "FuelLocation_Loc")
         {
-            return typeof(FindFuel_OP);
+            return typeof(FindFuel_OPRBS);
         }
         else if (loc != null && loc.gameObject.name == "HealthLocation_Loc")
         {
-            return typeof(FindHealth_OP);
+            return typeof(FindHealth_OPRBS);
         }
         else if (loc != null && loc.gameObject.name == "AmmoLocation_Loc")
         {
-            return typeof(FindAmmo_OP);
+            return typeof(FindAmmo_OPRBS);
         }
         else
         {
@@ -60,7 +60,7 @@ public class Wander_OPRBS : BaseState_OPRBS
             //if the tank is close than 25 units to the enemy it will start chasing otherwise set the targets to null
             if (Vector3.Distance(Tank.gameObject.transform.position, enTankPosition.transform.position) < 25f)
             {
-                return typeof(Follow_OP);
+                return typeof(Follow_OPRBS);
             }
             else
             {
@@ -69,6 +69,15 @@ public class Wander_OPRBS : BaseState_OPRBS
                 return null;
             }
         }
+
+        foreach (var item in Tank.rules.GetRules)
+        {
+            if (item.CheckRule(Tank.stats) != null)
+            {
+                return item.CheckRule(Tank.stats);
+            }
+        }
+
         return null;
     }
 }

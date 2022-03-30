@@ -25,22 +25,22 @@ public class FindAmmo_OPRBS : BaseState_OPRBS
 
     public override Type StateUpdate()
     {
-        bool Anyammo = false;
-        foreach (GameObject item in Tank.potConsumableLocation)
+        foreach (var item in Tank.rules.GetRules)
         {
-            if (item.transform.name == "AmmoLocation_Loc")
+            if (item.CheckRule(Tank.stats) != null)
             {
-                Anyammo = true;
+                return item.CheckRule(Tank.stats);
             }
         }
-        if (Anyammo)
+
+        if (Tank.stats["Ammo Found"] == true)
         {
             Tank.findAmmo();
             return null;
         }
         else
         {
-            return typeof(Wander_OP);
+            return typeof(Wander_OPRBS);
         }
     }
 }

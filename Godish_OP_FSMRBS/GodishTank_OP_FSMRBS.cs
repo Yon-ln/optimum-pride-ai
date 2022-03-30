@@ -65,6 +65,9 @@ public class GodishTank_OP_FSMRBS : AITank
         stats.Add("High Ammo", false);
         stats.Add("High Health", false);
         stats.Add("Find Base", false);
+        stats.Add("Ammo Found", false);
+        stats.Add("Health Found", false);
+        stats.Add("Fuel Found", false);
 
         stats.Add("Follow State", false);
         stats.Add("Wander State", false);
@@ -114,6 +117,8 @@ public class GodishTank_OP_FSMRBS : AITank
                 Debug.Log("destroyed");
             }
         }
+
+        InventoryCheck();
     }
 
     /*******************************************************************************************************       
@@ -145,6 +150,20 @@ public class GodishTank_OP_FSMRBS : AITank
             potConsumableLocation.Add(point);
         }
     }
+
+    void InventoryCheck() 
+    {
+        foreach(GameObject item in potConsumableLocation) 
+        {
+            if(item.gameObject.name == "AmmoLocation_Loc") { stats["Ammo Found"] = true; }
+            else { stats["Ammo Found"] = false; }
+            if (item.gameObject.name == "FuelLocation_Loc") { stats["Fuel Found"] = true; }
+            else { stats["Fuel Found"] = false; }
+            if (item.gameObject.name == "HealthLocation_Loc") { stats["Health Found"] = true; }
+            else { stats["Health Found"] = false; }
+        }
+    }
+
     //Gary
     private void CirculateTank() 
     {
@@ -272,6 +291,15 @@ public class GodishTank_OP_FSMRBS : AITank
         if (targetTankPosition != null)
         {
             FireAtPoint(targetTankPosition);
+        }
+    }
+    public void escape()
+    {
+        FollowPathToRandomPoint(1f);
+        targetTanksFound = GetAllTargetTanksFound;
+        if (targetTanksFound.Count > 0 && targetTanksFound.First().Key != null)
+        {
+            targetTankPosition = targetTanksFound.First().Key;
         }
     }
 }

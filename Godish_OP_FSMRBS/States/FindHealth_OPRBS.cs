@@ -25,15 +25,15 @@ public class FindHealth_OPRBS : BaseState_OPRBS
 
     public override Type StateUpdate()
     {
-        bool Anyhealth = false;
-        foreach (GameObject item in Tank.potConsumableLocation)
+        foreach (var item in Tank.rules.GetRules)
         {
-            if (item.transform.name == "HealthLocation_Loc")
+            if (item.CheckRule(Tank.stats) != null)
             {
-                Anyhealth = true;
+                return item.CheckRule(Tank.stats);
             }
         }
-        if (Anyhealth)
+
+        if (Tank.stats["Health Found"] == true)
         {
             Tank.findHealth();
             return null;

@@ -6,6 +6,7 @@ using UnityEngine;
 public class Escape_OPRBS : BaseState_OPRBS
 {
     private GodishTank_OP_FSMRBS Tank;//Change the script type eventually temporary name lol
+    private float timer = 0.0f;
     public Escape_OPRBS(GodishTank_OP_FSMRBS tank) 
     {
         this.Tank = tank;
@@ -25,6 +26,15 @@ public class Escape_OPRBS : BaseState_OPRBS
 
     public override Type StateUpdate()
     {
+        Tank.escape();
+
+        foreach (var item in Tank.rules.GetRules)
+        {
+            if (item.CheckRule(Tank.stats) != null)
+            {
+                return item.CheckRule(Tank.stats);
+            }
+        }
         return null;
     }
 }

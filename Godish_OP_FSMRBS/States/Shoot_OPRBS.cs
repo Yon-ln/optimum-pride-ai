@@ -35,14 +35,24 @@ public class Shoot_OPRBS : BaseState_OPRBS
             {
                 Tank.targetTanksFound = null;
                 enTankPosition = null;
-                return typeof(Wander_OP);
+                return typeof(Wander_OPRBS);
             }
             else
             {
+                Debug.Log("Optimus has opened fire!");
                 Tank.shoot();
-                return typeof(Wander_OP);
+                return typeof(Escape_OPRBS);
             }
         }
+
+        foreach (var item in Tank.rules.GetRules)
+        {
+            if (item.CheckRule(Tank.stats) != null)
+            {
+                return item.CheckRule(Tank.stats);
+            }
+        }
+
         return null;
     }
 }

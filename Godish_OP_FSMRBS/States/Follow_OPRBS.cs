@@ -26,6 +26,14 @@ public class Follow_OPRBS : BaseState_OPRBS
 
     public override Type StateUpdate()
     {
+        foreach (var item in Tank.rules.GetRules)
+        {
+            if (item.CheckRule(Tank.stats) != null)
+            {
+                return item.CheckRule(Tank.stats);
+            }
+        }
+
         Tank.Follow();
         GameObject enTankPosition;//gets tank position if there is a tank so that it doesn't call an error on every update
         if (Tank.targetTankPosition != null)
@@ -36,11 +44,11 @@ public class Follow_OPRBS : BaseState_OPRBS
             {
                 Tank.targetTanksFound = null;
                 enTankPosition = null;
-                return typeof(Wander_OP);
+                return typeof(Wander_OPRBS);
             }
             else
             {
-                return typeof(Shoot_OP);
+                return typeof(Shoot_OPRBS);
             }
         }
         return null;
