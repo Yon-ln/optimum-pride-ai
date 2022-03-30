@@ -27,6 +27,12 @@ public class Escape_OPRBS : BaseState_OPRBS
     public override Type StateUpdate()
     {
         Tank.escape();
+        timer = +Time.deltaTime;
+        if(timer > 5) 
+        {
+            timer = 0;
+            return typeof(Wander_OPRBS);
+        }
 
         foreach (var item in Tank.rules.GetRules)
         {

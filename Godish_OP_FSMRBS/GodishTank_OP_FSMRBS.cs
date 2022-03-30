@@ -77,9 +77,9 @@ public class GodishTank_OP_FSMRBS : AITank
         stats.Add("Shoot State", false);
         stats.Add("Escape State", false);
 
-        rules.AddRule(new Rule_OP(new List<string> { "Enemy Found", "No Ammo" }, typeof(Escape_OPRBS), Rule_OP.Predicate.And));
+        rules.AddRule(new Rule_OP(new List<string> { "Enemy Found", "Has Ammo" }, typeof(Escape_OPRBS), Rule_OP.Predicate.And));
         rules.AddRule(new Rule_OP(new List<string> { "Enemy Found", "Has Ammo" }, typeof(Shoot_OPRBS), Rule_OP.Predicate.And));
-        rules.AddRule(new Rule_OP(new List<string> { "Enemy Found", "Enemy Is Far", "Ammo", "High Fuel", "High Health" }, typeof(Follow_OPRBS), Rule_OP.Predicate.And));
+        rules.AddRule(new Rule_OP(new List<string> { "Enemy Found", "Has Ammo", "High Fuel", "High Health" }, typeof(Follow_OPRBS), Rule_OP.Predicate.And));
     }
 
     /*******************************************************************************************************       
