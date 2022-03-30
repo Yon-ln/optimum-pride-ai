@@ -119,6 +119,9 @@ public class GodishTank_OP_FSMRBS : AITank
         }
 
         InventoryCheck();
+        checkAmmo();
+        checkFuel();
+        checkHealth();
     }
 
     /*******************************************************************************************************       
