@@ -233,4 +233,13 @@ public class GodishTank_OP_FSM : AITank
             FireAtPoint(targetTankPosition);
         }
     }
+    public void escape()
+    {
+        FollowPathToRandomPoint(1f);
+        targetTanksFound = GetAllTargetTanksFound;
+        if (targetTanksFound.Count > 0 && targetTanksFound.First().Key != null)
+        {
+            targetTankPosition = targetTanksFound.First().Key;
+        }
+    }
 }

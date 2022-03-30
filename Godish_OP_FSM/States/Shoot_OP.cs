@@ -37,8 +37,9 @@ public class Shoot_OP : BaseState_OP
             }
             else
             {
+                Debug.Log("Optimus has opened fire!");
                 Tank.shoot();
-                return typeof(Wander_OP);
+                return typeof(Escape_OP);
             }
         }
         return null;
