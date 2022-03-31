@@ -14,33 +14,30 @@ public class FindAmmo_OPRBS : BaseState_OPRBS
     public override Type StateEnter()
     {
         Tank.stats["Find Ammo State"] = true;
+        Debug.Log("Ammo State Entered");
+
         return null;
     }
 
     public override Type StateExit()
     {
         Tank.stats["Find Ammo State"] = false;
+        Tank.stats["Ammo Found"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
-        foreach (var item in Tank.rules.GetRules)
-        {
-            if (item.CheckRule(Tank.stats) != null)
-            {
-                return item.CheckRule(Tank.stats);
-            }
+        if(Tank.checkConsumables("AmmoLocation_Loc")){
+
+            Tank.findAmmo();
+
+        } else{
+
+            return typeof(Wander_OPRBS);
+            
         }
 
-        if (Tank.stats["Ammo Found"] == true)
-        {
-            Tank.findAmmo();
-            return null;
-        }
-        else
-        {
-            return typeof(Wander_OPRBS);
-        }
+        return null;
     }
 }

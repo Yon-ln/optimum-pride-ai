@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class Follow_OPRBS : BaseState_OPRBS
 {
@@ -15,42 +12,41 @@ public class Follow_OPRBS : BaseState_OPRBS
     public override Type StateEnter()
     {
         Tank.stats["Follow State"] = true;
+        Debug.Log("Follow State Entered");
         return null;
     }
 
     public override Type StateExit()
     {
         Tank.stats["Follow State"] = false;
+
         return null;
     }
 
     public override Type StateUpdate()
     {
-        foreach (var item in Tank.rules.GetRules)
-        {
-            if (item.CheckRule(Tank.stats) != null)
-            {
-                return item.CheckRule(Tank.stats);
-            }
-        }
-
         Tank.Follow();
-        GameObject enTankPosition;//gets tank position if there is a tank so that it doesn't call an error on every update
+
         if (Tank.targetTankPosition != null)
         {
-            enTankPosition = Tank.targetTankPosition;
-            //if the distance is further than 25 set the targets to null and wander again
-            if (Vector3.Distance(Tank.gameObject.transform.position, enTankPosition.transform.position) > 25f) 
+
+            if (Vector3.Distance(Tank.gameObject.transform.position, Tank.targetTankPosition.transform.position) > 25f) 
             {
                 Tank.targetTanksFound = null;
-                enTankPosition = null;
-                return typeof(Wander_OPRBS);
+                Tank.stats["Enemy Found"] = false;
             }
             else
             {
                 return typeof(Shoot_OPRBS);
             }
         }
+        
+        foreach(var item in Tank.rules.GetRules){
+            if(item.CheckRule(Tank.stats) != null){
+                return item.CheckRule(Tank.stats);
+            }
+        }
+
         return null;
     }
 }

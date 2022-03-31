@@ -1,11 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Shoot_OPRBS : BaseState_OPRBS
 {
     private GodishTank_OP_FSMRBS Tank;
+    private float time = 0;
     public Shoot_OPRBS(GodishTank_OP_FSMRBS tank)
     {
         this.Tank = tank;
@@ -16,19 +15,23 @@ public class Shoot_OPRBS : BaseState_OPRBS
         Tank.stats["Shoot State"] = true;
         Tank.stats["Turret Shot"] = false;
 
+        Debug.Log("Shoot State Entered");
+
         return null;
     }
 
     public override Type StateExit()
     {
         Tank.stats["Shoot State"] = false;
+        time = 0.0f;
         return null;
     }
 
     public override Type StateUpdate()
     {
+        time += Time.deltaTime;
+        
         //Robbie
-        GameObject enTankPosition;//gets tank position if there is a tank so that it doesn't call an error on every update
         if (Tank.targetTankPosition != null)
         {
             if (Vector3.Distance(Tank.gameObject.transform.position, Tank.targetTankPosition.transform.position) > 25f)
@@ -44,14 +47,13 @@ public class Shoot_OPRBS : BaseState_OPRBS
 
         }
 
-        foreach (var item in Tank.rules.GetRules)
-        {
-            if (item.CheckRule(Tank.stats) != null)
-            {
+        foreach(var item in Tank.rules.GetRules){
+            if(item.CheckRule(Tank.stats) != null){
                 return item.CheckRule(Tank.stats);
             }
         }
 
         return null;
+        
     }
 }

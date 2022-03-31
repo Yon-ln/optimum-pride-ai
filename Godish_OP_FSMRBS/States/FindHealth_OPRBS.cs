@@ -14,33 +14,30 @@ public class FindHealth_OPRBS : BaseState_OPRBS
     public override Type StateEnter()
     {
         Tank.stats["Find Health State"] = true;
+        Debug.Log("Health State Entered");
+
         return null;
     }
 
     public override Type StateExit()
     {
         Tank.stats["Find Health State"] = false;
+        Tank.stats["Health Found"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
-        foreach (var item in Tank.rules.GetRules)
-        {
-            if (item.CheckRule(Tank.stats) != null)
-            {
-                return item.CheckRule(Tank.stats);
-            }
+        if(Tank.checkConsumables("HealthLocation_Loc")){
+
+            Tank.findHealth();
+
+        } else{
+
+            return typeof(Wander_OPRBS);
+            
         }
 
-        if (Tank.stats["Health Found"] == true)
-        {
-            Tank.findHealth();
-            return null;
-        }
-        else
-        {
-            return typeof(Wander_OP);
-        }
+        return null;
     }
 }

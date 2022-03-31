@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FindFuel_OPRBS : BaseState_OPRBS
@@ -14,33 +12,31 @@ public class FindFuel_OPRBS : BaseState_OPRBS
     public override Type StateEnter()
     {
         Tank.stats["Find Fuel State"] = true;
+        Debug.Log("Fuel State Entered");
+
         return null;
     }
 
     public override Type StateExit()
     {
         Tank.stats["Find Fuel State"] = false;
+        Tank.stats["Fuel Found"] = false;
+
         return null;
     }
 
     public override Type StateUpdate()
     {
-        foreach (var item in Tank.rules.GetRules)
-        {
-            if (item.CheckRule(Tank.stats) != null)
-            {
-                return item.CheckRule(Tank.stats);
-            }
+        if(Tank.checkConsumables("FuelLocation_Loc")){
+
+            Tank.findFuel();
+
+        } else{
+
+            return typeof(Wander_OPRBS);
+            
         }
 
-        if (Tank.stats["Fuel Found"] == true) 
-        {
-            Tank.findFuel();
-            return null;
-        }
-        else 
-        {
-            return typeof(Wander_OPRBS);
-        }
+        return null;
     }
 }

@@ -1,13 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Escape_OPRBS : BaseState_OPRBS
 {
-    private GodishTank_OP_FSMRBS Tank;//Change the script type eventually temporary name lol
-    private float timer = 0.0f;
-    public Escape_OPRBS(GodishTank_OP_FSMRBS tank) 
+    private GodishTank_OP_FSMRBS Tank;
+
+    public Escape_OPRBS(GodishTank_OP_FSMRBS tank)
     {
         this.Tank = tank;
     }
@@ -22,9 +20,9 @@ public class Escape_OPRBS : BaseState_OPRBS
 
         float perpendicular = -1.0f / ((enemyPosition.z - tankPosition.z) / (enemyPosition.x - tankPosition.x));
 
-        Tank.strafePositions[0] = tankPosition + new Vector3(5.0f, 0.0f, 5.0f * perpendicular);
-        Tank.strafePositions[1] = tankPosition + new Vector3(-5.0f, 0.0f, -5.0f * perpendicular);
-
+        Tank.strafePositions[0] = tankPosition + Vector3.ClampMagnitude(new Vector3(8.0f ,0.0f, 8.0f * perpendicular),8);
+        Tank.strafePositions[1] = tankPosition + Vector3.ClampMagnitude(new Vector3(-8.0f ,0.0f, -8.0f * perpendicular),8);
+        
         Debug.Log("Escape State Entered");
 
         return null;
@@ -38,29 +36,18 @@ public class Escape_OPRBS : BaseState_OPRBS
 
     public override Type StateUpdate()
     {
-        if (Tank.stats["Low Health"] || Tank.stats["Low Fuel"] || Tank.stats["Low Ammo"])
-        {
+        if(Tank.stats["Low Health"] || Tank.stats["Low Fuel"] || Tank.stats["Low Ammo"]){
             Tank.stats["Strafing"] = false;
-            return typeof(Wander_OP);
+            return typeof(Wander_OPRBS);
         }
 
-        if (Tank.stats["Strafing"])
-        {
+        if(Tank.stats["Strafing"]){
             Tank.Strafe();
-        }
-        else
-        {
-            return typeof(Shoot_OP);
+
+        } else{
+            return typeof(Shoot_OPRBS);
         }
 
-
-        foreach (var item in Tank.rules.GetRules)
-        {
-            if (item.CheckRule(Tank.stats) != null)
-            {
-                return item.CheckRule(Tank.stats);
-            }
-        }
         return null;
     }
 }
