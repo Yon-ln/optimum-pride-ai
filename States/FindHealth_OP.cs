@@ -14,7 +14,7 @@ public class FindHealth_OP : BaseState_OP
     public override Type StateEnter()
     {
         Tank.stats["Find Health State"] = true;
-        Debug.Log("5");
+        Debug.Log("Health State Entered");
 
         return null;
     }
@@ -22,27 +22,22 @@ public class FindHealth_OP : BaseState_OP
     public override Type StateExit()
     {
         Tank.stats["Find Health State"] = false;
+        Tank.stats["Health Found"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
-        bool Anyhealth = false;
-        foreach (GameObject item in Tank.potConsumableLocation)
-        {
-            if (item.transform.name == "HealthLocation_Loc")
-            {
-                Anyhealth = true;
-            }
-        }
-        if (Anyhealth)
-        {
+        if(Tank.checkConsumables("HealthLocation_Loc")){
+
             Tank.findHealth();
-            return null;
-        }
-        else
-        {
+
+        } else{
+
             return typeof(Wander_OP);
+            
         }
+
+        return null;
     }
 }

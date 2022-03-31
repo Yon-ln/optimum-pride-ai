@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,6 +21,7 @@ public class StateMachine_OP_FSM : MonoBehaviour
     {
         if(CurrentState == null){
             CurrentState = states.Values.First();
+            CurrentState.StateEnter();
         } else{
             var nextState = CurrentState.StateUpdate();
             if(nextState != null && nextState != CurrentState.GetType()){

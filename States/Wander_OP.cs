@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Wander_OP : BaseState_OP
@@ -14,7 +12,7 @@ public class Wander_OP : BaseState_OP
     public override Type StateEnter()
     {
         Tank.stats["Wander State"] = true;
-        Debug.Log("2");
+        Debug.Log("Wander State Entered");
 
         return null;
     }
@@ -27,53 +25,47 @@ public class Wander_OP : BaseState_OP
 
     public override Type StateUpdate()
     {
-        float lowestdist = 1000;
-        GameObject loc = null;
+        Tank.Wander();
 
         foreach(GameObject item in Tank.potConsumableLocation) 
-        {
-            if (Vector3.Distance(Tank.transform.position, item.transform.position) < lowestdist)
-            {
-                lowestdist = Vector3.Distance(Tank.transform.position, item.transform.position);
-                loc = item;
+        {   
+            if(item != null){
+                if (item.name == "FuelLocation_Loc"){
+                    Tank.stats["Fuel Found"] = true;
+                } else if(item.name == "HealthLocation_Loc"){
+                    Tank.stats["Health Found"] = true;
+                } else if(item.name == "AmmoLocation_Loc"){
+                    Tank.stats["Ammo Found"] = true;
+                }
             }
         }
-        if (loc != null && loc.gameObject.name == "FuelLocation_Loc")
-        {
-            return typeof(FindFuel_OP);
-        }
-        else if (loc != null && loc.gameObject.name == "HealthLocation_Loc")
-        {
-            return typeof(FindHealth_OP);
-        }
-        else if (loc != null && loc.gameObject.name == "AmmoLocation_Loc")
-        {
-            return typeof(FindAmmo_OP);
-        }
-        else
-        {
-            Tank.Wander();
-        }
-        
+
         GameObject enTankPosition;//gets tank position if there is a tank so that it doesn't call an error on every update
         if(Tank.targetTankPosition != null) 
         {
-            Tank.stats["Enemy Found"] = true;
+            
             enTankPosition = Tank.targetTankPosition;
             //if the tank is close than 25 units to the enemy it will start chasing otherwise set the targets to null
             if (Vector3.Distance(Tank.gameObject.transform.position, enTankPosition.transform.position) < 25f)
             {
-                Tank.stats["Enemy Nearby"] = true;
-                return typeof(Follow_OP);
+                Tank.stats["Enemy Found"] = true;
+
             }
             else
             {
-                Tank.stats["Enemy Nearby"] = false;
+                Tank.stats["Enemy Found"] = false;
                 Tank.targetTanksFound = null;
                 enTankPosition = null;
-                return null;
+                
             }
         }
+
+        foreach(var item in Tank.rules.GetRules){
+            if(item.CheckRule(Tank.stats) != null){
+                return item.CheckRule(Tank.stats);
+            }
+        }
+
         return null;
     }
 }

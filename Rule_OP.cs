@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Rule_OP
 {
-    public List<string> antecendants = new List<string>();
+    public List<List<string>> antecendants = new List<List<string>>();
     public Type consequentState;
     public Predicate compare;
 
     public enum Predicate
-    { And, Or, nAnd, Implies }
+    { And, Or, And_nAnd, nAnd, And_nOr }
 
     // And &&
     // Or ||
     // Not And ! && !
-    // Implies A => B, this means if a is true, then b has to be true, if a is false, then b can be true or false
-    // In this case {A, B, C, D} If a is true, then one of the values {B, C, D} has to be true.
 
-    public Rule_OP(List<string> antecendants, Type consequentState, Predicate compare){
+    public Rule_OP(List<List<string>> antecendants, Type consequentState, Predicate compare){
         this.antecendants = antecendants;
         this.consequentState = consequentState;
         this.compare = compare;
@@ -24,53 +23,88 @@ public class Rule_OP
     }
 
     public Type CheckRule(Dictionary<string, bool> stats){
-        List<bool> antecendantBools = new List<bool>();
-        foreach(string i in antecendants){
-            antecendantBools.Add(stats[i]);
+
+        List<List<bool>> antecendantBools = new List<List<bool>>();
+        foreach(List<string> list in antecendants){
+            
+            if(list.Count > 0){
+                antecendantBools.Add(new List<bool>{});
+
+                for(int i = 0; i < list.Count; ++i){
+                    antecendantBools[antecendants.IndexOf(list)].Add(stats[list[i]]);
+                }
+            }
+
         }
         
         switch(compare){
 
             case Predicate.And:
-                if(!antecendantBools.Contains(false)){ // if antecendant contains any false values, then it is true. then doing !true will make it false.
+                if(antecendantBools.First().All(x => x == true) && antecendantBools.Last().All(x => x == true)){ // if antecendant contains any false values, then it is true. then doing !true will make it false.
+                    
                     return consequentState;
 
-                } else
-                {
+                } 
+                else {
+
                     return null;
+
                 }
 
             case Predicate.Or:
-                if(antecendantBools.Contains(true)){
+
+                if(antecendantBools.First().Contains(true) || antecendantBools.Last().Contains(true)){
+
                     return consequentState;
                 }
                 else{
+                    
                     return null;
                 }
 
             case Predicate.nAnd:
-                if(antecendantBools.Contains(true)){
-                    return null;
-                }
-                else{
+                if((antecendantBools.First().All(x => x == false) && antecendantBools.Last().All(x => x == false))){
+                    
                     return consequentState;
                 }
+                else{
 
-            case Predicate.Implies:
-                if(antecendantBools[0]){
-                   List<bool> antecendantExclusions = new List<bool>(antecendantBools);
-                   antecendantExclusions.RemoveAt(0);
-                   
-                   if(antecendantExclusions.Contains(true)){
-                       return consequentState;
-                   } else{
-                       return null;
-                   }
-
-                }else{
                     return null;
+                    
                 }
+
+            case Predicate.And_nAnd:
+
+                if(antecendantBools.First().All(x => x == true) && !antecendantBools.Last().All(x => x == false)){
+                    return consequentState;
+
+                } 
+                else{
             
+                    return null;
+                
+                }
+
+            case Predicate.And_nOr:
+
+                    if(antecendantBools.First().All(x => x == true)){
+                        
+                        if(antecendantBools.Last().Contains(true)){
+
+                            return null;
+                        
+                        } 
+                        else{
+
+                            return consequentState;
+
+                        }
+
+                    }
+                    else{
+                        
+                        return null;
+                    }
 
             default:
                 return null;

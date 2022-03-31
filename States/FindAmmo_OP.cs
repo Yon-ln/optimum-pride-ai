@@ -14,7 +14,7 @@ public class FindAmmo_OP : BaseState_OP
     public override Type StateEnter()
     {
         Tank.stats["Find Ammo State"] = true;
-        Debug.Log("3");
+        Debug.Log("Ammo State Entered");
 
         return null;
     }
@@ -22,29 +22,22 @@ public class FindAmmo_OP : BaseState_OP
     public override Type StateExit()
     {
         Tank.stats["Find Ammo State"] = false;
+        Tank.stats["Ammo Found"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
-        bool Anyammo = false;
-        foreach (GameObject item in Tank.potConsumableLocation)
-        {
-            if (item.transform.name == "AmmoLocation_Loc")
-            {
-                Anyammo = true;
-            }
-        }
-        
-        if (Anyammo)
-        {
-            
+        if(Tank.checkConsumables("AmmoLocation_Loc")){
+
             Tank.findAmmo();
-            return null;
-        }
-        else
-        {
+
+        } else{
+
             return typeof(Wander_OP);
+            
         }
+
+        return null;
     }
 }

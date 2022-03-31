@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FindFuel_OP : BaseState_OP
@@ -14,7 +12,7 @@ public class FindFuel_OP : BaseState_OP
     public override Type StateEnter()
     {
         Tank.stats["Find Fuel State"] = true;
-        Debug.Log("7");
+        Debug.Log("Fuel State Entered");
 
         return null;
     }
@@ -22,27 +20,23 @@ public class FindFuel_OP : BaseState_OP
     public override Type StateExit()
     {
         Tank.stats["Find Fuel State"] = false;
+        Tank.stats["Fuel Found"] = false;
+
         return null;
     }
 
     public override Type StateUpdate()
     {
-        bool Anyfuel = false;
-        foreach (GameObject item in Tank.potConsumableLocation)
-        {
-            if (item.transform.name == "FuelLocation_Loc")
-            {
-                Anyfuel = true;
-            }
-        }
-        if (Anyfuel) 
-        {
+        if(Tank.checkConsumables("FuelLocation_Loc")){
+
             Tank.findFuel();
-            return null;
-        }
-        else 
-        {
+
+        } else{
+
             return typeof(Wander_OP);
+            
         }
+
+        return null;
     }
 }
