@@ -12,17 +12,21 @@ public class GodishTank_OP_FSMRBS : AITank
 
     public List<GameObject> potConsumableLocation = new List<GameObject>();
 
-
     public GameObject targetTankPosition;
+    public GameObject targetDodgePosition;
     public GameObject consumablePosition;
     public GameObject basePosition;
     public List<GameObject> fixedPoints = new List<GameObject>();
+    public Vector3[] strafePositions = new Vector3[2];
 
-    private List<Vector3> points = new List<Vector3>() { new Vector3(-65,0,49), new Vector3(-65,0,-71), new Vector3(57,0,-71), new Vector3(57,0,60) };
+    private List<Vector3> points = new List<Vector3>() { new Vector3(-65, 0, 49), new Vector3(-65, 0, -71), new Vector3(57, 0, -71), new Vector3(57, 0, 60) };
     private int curPointLoc = 0;
 
     public Dictionary<string, bool> stats = new Dictionary<string, bool>();
+    public List<bool> statsB = new List<bool>();
     public Rules_OP rules = new Rules_OP();
+    private bool isMoving = false;
+    public float a = 0.0f;
 
     private void StartStateMachine() 
     {
@@ -56,30 +60,37 @@ public class GodishTank_OP_FSMRBS : AITank
         fixedPoints.Add(new GameObject("Point_3_OP"));
         fixedPoints[3].transform.position = points[3];
 
-        stats.Add("Enemy Found", false);
-        stats.Add("Has Ammo", false);
-        stats.Add("Low Fuel", false);
-        stats.Add("Low Ammo", false);
-        stats.Add("Low Health", false);
-        stats.Add("High Fuel", false);
-        stats.Add("High Ammo", false);
-        stats.Add("High Health", false);
-        stats.Add("Find Base", false);
-        stats.Add("Ammo Found", false);
-        stats.Add("Health Found", false);
-        stats.Add("Fuel Found", false);
+        stats.Add("Enemy Found", false);        //0
+        stats.Add("Enemy Nearby", false);       //1
+        stats.Add("Has Ammo", false);           //2
+        stats.Add("Low Fuel", false);           //3
+        stats.Add("Low Ammo", false);           //4
+        stats.Add("Low Health", false);         //5
+        stats.Add("Enemy Base Found", false);   //6
+        stats.Add("Ammo Found", false);         //7
+        stats.Add("Health Found", false);       //8
+        stats.Add("Fuel Found", false);         //9
+        stats.Add("Turret Shot", false);        //10
+        stats.Add("Follow State", false);       //11
+        stats.Add("Wander State", true);        //12
+        stats.Add("Find Ammo State", false);    //13
+        stats.Add("Find Fuel State", false);    //14
+        stats.Add("Find Health State", false);  //15
+        stats.Add("Shoot State", false);        //16
+        stats.Add("Escape State", false);       //17
+        stats.Add("Strafing", false);           //18
 
-        stats.Add("Follow State", false);
-        stats.Add("Wander State", false);
-        stats.Add("Find Ammo State", false);
-        stats.Add("Find Fuel State", false);
-        stats.Add("Find Health State", false);
-        stats.Add("Shoot State", false);
-        stats.Add("Escape State", false);
 
-        rules.AddRule(new Rule_OP(new List<string> { "Enemy Found", "Has Ammo" }, typeof(Escape_OPRBS), Rule_OP.Predicate.And));
-        rules.AddRule(new Rule_OP(new List<string> { "Enemy Found", "Has Ammo" }, typeof(Shoot_OPRBS), Rule_OP.Predicate.And));
-        rules.AddRule(new Rule_OP(new List<string> { "Enemy Found", "Has Ammo", "High Fuel", "High Health" }, typeof(Follow_OPRBS), Rule_OP.Predicate.And));
+        AddRule(new List<string> { "Wander State" }, new List<string> { "Fuel Found" }, typeof(FindFuel_OPRBS), Rule_OP.Predicate.And);
+        AddRule(new List<string> { "Wander State", "Health Found", "Low Health" }, new List<string> { }, typeof(FindHealth_OPRBS), Rule_OP.Predicate.And);
+        AddRule(new List<string> { "Wander State", "Ammo Found", "Low Ammo" }, new List<string> { }, typeof(FindAmmo_OPRBS), Rule_OP.Predicate.And);
+
+        AddRule(new List<string> { "Shoot State" }, new List<string> { "Low Fuel", "Low Health", "Low Ammo" }, typeof(Escape_OPRBS), Rule_OP.Predicate.And_nOr);
+        AddRule(new List<string> { "Shoot State", "Turret Shot" }, new List<string> { "Low Fuel" }, typeof(Escape_OPRBS), Rule_OP.Predicate.And_nAnd);
+        AddRule(new List<string> { "Turret Shot", "Escape State" }, new List<string> { "Strafing" }, typeof(Shoot_OPRBS), Rule_OP.Predicate.And_nAnd); // If the turret is shooting and it knows where the fuel is, it will turn to the escape state to dodge bullets from the enemy.
+        AddRule(new List<string> { "Enemy Found" }, new List<string> { "Low Fuel", "Low Health", "Low Ammo" }, typeof(Follow_OPRBS), Rule_OP.Predicate.And_nOr);
+
+        Debug.Log(stats.Count);
     }
 
     /*******************************************************************************************************       
@@ -87,20 +98,27 @@ public class GodishTank_OP_FSMRBS : AITank
     *******************************************************************************************************/
     public override void AITankUpdate()
     {
-        //On every update the tank will stored last known location of consumables which will be stored as pot dictionary members
+        //On every update the tank will stored last known location of consumables which will be stored as psot dictionary members
         consumablesFound = GetAllConsumablesFound;
         targetTanksFound = GetAllTargetTanksFound;
         bool duplicate = false;
-        foreach(GameObject consumable in consumablesFound.Keys) //It iterates through all the consumables found and stores them into it as long its not a dupe
+
+        checkAmmo();
+        checkFuel();
+        checkHealth();
+        ConLocationCheck();
+        statsB = stats.Values.ToList(); // Checking which stats are active
+
+        foreach (GameObject consumable in consumablesFound.Keys) //It iterates through all the consumables found and stores them into it as long its not a dupe
         {
-            foreach(GameObject item in potConsumableLocation) 
+            foreach (GameObject item in potConsumableLocation)
             {
-                if(Vector3.Distance(item.gameObject.transform.position, consumable.transform.position) < 5f) 
+                if (Vector3.Distance(item.gameObject.transform.position, consumable.transform.position) < 5f)
                 {
                     duplicate = true;
                 }
             }
-            if (!duplicate) 
+            if (!duplicate)
             {
                 GenerateLastKnownPoint(consumable);
                 duplicate = false;
@@ -108,20 +126,18 @@ public class GodishTank_OP_FSMRBS : AITank
         }
         consumablesFound = null;
 
-        foreach (GameObject item in potConsumableLocation)
+        for (int i = 0; i < potConsumableLocation.Count(); ++i)
         {
+            GameObject item = potConsumableLocation[i];
             if (Vector3.Distance(item.gameObject.transform.position, transform.position) < 5f)
             {
+                potConsumableLocation.RemoveAt(i);
                 Destroy(item);
-                potConsumableLocation.Remove(item);
-                Debug.Log("destroyed");
+                i--;
+
+                Debug.Log("Destroyed");
             }
         }
-
-        InventoryCheck();
-        checkAmmo();
-        checkFuel();
-        checkHealth();
     }
 
     /*******************************************************************************************************       
@@ -153,17 +169,20 @@ public class GodishTank_OP_FSMRBS : AITank
             potConsumableLocation.Add(point);
         }
     }
-
-    void InventoryCheck() 
+    //Gary
+    void ConLocationCheck() 
     {
-        foreach(GameObject item in potConsumableLocation) 
+        if(potConsumableLocation.Count > 0) 
         {
-            if(item.gameObject.name == "AmmoLocation_Loc") { stats["Ammo Found"] = true; }
-            else { stats["Ammo Found"] = false; }
-            if (item.gameObject.name == "FuelLocation_Loc") { stats["Fuel Found"] = true; }
-            else { stats["Fuel Found"] = false; }
-            if (item.gameObject.name == "HealthLocation_Loc") { stats["Health Found"] = true; }
-            else { stats["Health Found"] = false; }
+            foreach (GameObject item in potConsumableLocation)
+            {
+                if (item.gameObject.name == "AmmoLocation_Loc") { stats["Ammo Found"] = true; }
+                else { stats["Ammo Found"] = false; }
+                if (item.gameObject.name == "FuelLocation_Loc") { stats["Fuel Found"] = true; }
+                else { stats["Fuel Found"] = false; }
+                if (item.gameObject.name == "HealthLocation_Loc") { stats["Health Found"] = true; }
+                else { stats["Health Found"] = false; }
+            }
         }
     }
 
@@ -272,9 +291,9 @@ public class GodishTank_OP_FSMRBS : AITank
     //George
     public float checkFuel()
     {
-        if(GetFuelLevel > 75) { stats["High Fuel"] = true; }
+        if(GetFuelLevel > 100) { stats["High Fuel"] = true; }
         else { stats["High Fuel"] = false; }
-        if (GetFuelLevel < 25){ stats["Low Fuel"] = true; }
+        if (GetFuelLevel < 50){ stats["Low Fuel"] = true; }
         else { stats["Low Fuel"] = false; }
         return GetFuelLevel;
     }
@@ -304,5 +323,31 @@ public class GodishTank_OP_FSMRBS : AITank
         {
             targetTankPosition = targetTanksFound.First().Key;
         }
+    }
+
+    //Yon
+    public void Strafe()
+    {
+        if (targetTankPosition != null)
+        {
+            FollowPathToPoint(targetDodgePosition, 0.25f);
+
+            FaceTurretToPoint(targetTankPosition.transform.position);
+        }
+
+        if (Vector3.Distance(strafePositions[0], transform.position) < 3.0f)
+        {
+            stats["Strafing"] = false;
+        }
+
+    }
+
+    public void AddRule(List<string> A, List<string> B, Type state, Rule_OP.Predicate predicate)
+    {
+        rules.AddRule(new Rule_OP(
+            new List<List<string>> { A, B },
+            state,
+            predicate
+        ));
     }
 }
