@@ -63,16 +63,16 @@ public class GodishTank_OP_FSM : AITank
         consumablesFound = GetAllConsumablesFound;
         targetTanksFound = GetAllTargetTanksFound;
         bool duplicate = false;
-        foreach(GameObject consumable in consumablesFound.Keys) //It iterates through all the consumables found and stores them into it as long its not a dupe
+        foreach (GameObject consumable in consumablesFound.Keys) //It iterates through all the consumables found and stores them into it as long its not a dupe
         {
-            foreach(GameObject item in potConsumableLocation) 
+            foreach (GameObject item in potConsumableLocation)
             {
-                if(Vector3.Distance(item.gameObject.transform.position, consumable.transform.position) < 5f) 
+                if (Vector3.Distance(item.gameObject.transform.position, consumable.transform.position) < 5f)
                 {
                     duplicate = true;
                 }
             }
-            if (!duplicate) 
+            if (!duplicate)
             {
                 GenerateLastKnownPoint(consumable);
                 duplicate = false;
@@ -80,13 +80,16 @@ public class GodishTank_OP_FSM : AITank
         }
         consumablesFound = null;
 
-        foreach (GameObject item in potConsumableLocation)
+        for (int i = 0; i < potConsumableLocation.Count(); ++i)
         {
+            GameObject item = potConsumableLocation[i];
             if (Vector3.Distance(item.gameObject.transform.position, transform.position) < 5f)
             {
+                potConsumableLocation.RemoveAt(i);
                 Destroy(item);
-                potConsumableLocation.Remove(item);
-                Debug.Log("destroyed");
+                i--;
+
+                Debug.Log("Destroyed");
             }
         }
     }
