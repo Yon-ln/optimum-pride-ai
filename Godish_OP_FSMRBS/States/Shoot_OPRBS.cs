@@ -41,7 +41,6 @@ public class Shoot_OPRBS : BaseState_OPRBS
             }
             else
             {
-                Tank.stats["Turret Shot"] = true;
                 Tank.shoot();
             }
 
@@ -50,16 +49,18 @@ public class Shoot_OPRBS : BaseState_OPRBS
         {
             Tank.ShootBase();
             Tank.stats["Enemy Base Found"] = false;
-            Tank.stats["Turret Shot"] = true;
             Tank.basePosition = null;
             return typeof(Wander_OPRBS);
         }
 
-        foreach (var item in Tank.rules.GetRules){
-            if(item.CheckRule(Tank.stats) != null){
-                return item.CheckRule(Tank.stats);
+        if(!Tank.stats["Turret Shot"]){
+            foreach (var item in Tank.rules.GetRules){
+                if(item.CheckRule(Tank.stats) != null){
+                    return item.CheckRule(Tank.stats);
+                }
             }
         }
+
 
         return null;
         

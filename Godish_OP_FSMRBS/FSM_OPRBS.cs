@@ -4,13 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class BaseState_OPRBS 
-{
-    public abstract Type StateUpdate();
-    public abstract Type StateEnter();
-    public abstract Type StateExit();
-}
-
 public class FSM_OPRBS : MonoBehaviour //Rename the inheritance if pushing to main and your script name is different
 {
     private Dictionary<Type, BaseState_OPRBS> states;

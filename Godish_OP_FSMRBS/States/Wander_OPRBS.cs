@@ -44,7 +44,6 @@ public class Wander_OPRBS : BaseState_OPRBS
         GameObject enBasePosition;
         if(Tank.targetTankPosition != null) 
         {
-            
             enTankPosition = Tank.targetTankPosition;
             //if the tank is close than 25 units to the enemy it will start chasing otherwise set the targets to null
             if (Vector3.Distance(Tank.gameObject.transform.position, enTankPosition.transform.position) < 25f)
@@ -63,6 +62,7 @@ public class Wander_OPRBS : BaseState_OPRBS
         else if (Tank.basePosition != null || Tank.basesFound.Count > 0)
         {
             enBasePosition = Tank.basePosition;
+
             if (Vector3.Distance(Tank.gameObject.transform.position, enBasePosition.transform.position) < 40f && Tank.checkAmmo() > 0)
             {
                 Tank.stats["Enemy Base Found"] = true;
