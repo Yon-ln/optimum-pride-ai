@@ -41,6 +41,7 @@ public class Wander_OPRBS : BaseState_OPRBS
         }
 
         GameObject enTankPosition;//gets tank position if there is a tank so that it doesn't call an error on every update
+        GameObject enBasePosition;
         if(Tank.targetTankPosition != null) 
         {
             
@@ -59,8 +60,23 @@ public class Wander_OPRBS : BaseState_OPRBS
                 
             }
         }
+        else if (Tank.basePosition != null || Tank.basesFound.Count > 0)
+        {
+            enBasePosition = Tank.basePosition;
+            if (Vector3.Distance(Tank.gameObject.transform.position, enBasePosition.transform.position) < 40f && Tank.checkAmmo() > 0)
+            {
+                Tank.stats["Enemy Base Found"] = true;
+                return typeof(Shoot_OPRBS);
+            }
+            else
+            {
+                Tank.stats["Enemy Base Found"] = false;
+                Tank.basePosition = null;
+                enBasePosition = null;
+            }
+        }
 
-        foreach(var item in Tank.rules.GetRules){
+        foreach (var item in Tank.rules.GetRules){
             if(item.CheckRule(Tank.stats) != null){
                 return item.CheckRule(Tank.stats);
             }

@@ -46,8 +46,16 @@ public class Shoot_OPRBS : BaseState_OPRBS
             }
 
         }
+        else if (Tank.basePosition != null)
+        {
+            Tank.ShootBase();
+            Tank.stats["Enemy Base Found"] = false;
+            Tank.stats["Turret Shot"] = true;
+            Tank.basePosition = null;
+            return typeof(Wander_OPRBS);
+        }
 
-        foreach(var item in Tank.rules.GetRules){
+        foreach (var item in Tank.rules.GetRules){
             if(item.CheckRule(Tank.stats) != null){
                 return item.CheckRule(Tank.stats);
             }

@@ -101,6 +101,8 @@ public class GodishTank_OP_FSMRBS : AITank
         //On every update the tank will stored last known location of consumables which will be stored as psot dictionary members
         consumablesFound = GetAllConsumablesFound;
         targetTanksFound = GetAllTargetTanksFound;
+        basesFound = GetAllBasesFound;
+
         bool duplicate = false;
 
         checkAmmo();
@@ -193,7 +195,7 @@ public class GodishTank_OP_FSMRBS : AITank
     {
         fixedPoints[0].transform.position = new Vector3(UnityEngine.Random.Range(-34,-47),0,UnityEngine.Random.Range(35,67));
         fixedPoints[1].transform.position = new Vector3(UnityEngine.Random.Range(-47, -70),0, UnityEngine.Random.Range(-34, -73));
-        fixedPoints[2].transform.position = new Vector3(UnityEngine.Random.Range(50, 66),0, UnityEngine.Random.Range(-41, -71));
+        fixedPoints[2].transform.position = new Vector3(UnityEngine.Random.Range(46, 70),0, UnityEngine.Random.Range(-35, -66));
         fixedPoints[3].transform.position = new Vector3(UnityEngine.Random.Range(25, 60),0, UnityEngine.Random.Range(30, 67));
     }
 
@@ -203,10 +205,21 @@ public class GodishTank_OP_FSMRBS : AITank
         CirculateTank();
 
         targetTanksFound = GetAllTargetTanksFound;
-        if(targetTanksFound.Count > 0 && targetTanksFound.First().Key != null) 
+        if (targetTanksFound.Count > 0)
         {
-            
             targetTankPosition = targetTanksFound.First().Key;
+        }
+        else
+        {
+            targetTankPosition = null;
+        }
+        if (basesFound.Count > 0)
+        {
+            basePosition = basesFound.First().Key;
+        }
+        else
+        {
+            basePosition = null;
         }
     }
 
@@ -314,14 +327,13 @@ public class GodishTank_OP_FSMRBS : AITank
             FireAtPoint(targetTankPosition);
         }
     }
-
-    public void Escape()
+    public void ShootBase()
     {
-        
-        
-    
+        if (basePosition != null)
+        {
+            FireAtPoint(basePosition);
+        }
     }
-
 
     //Yon
     public void Strafe()

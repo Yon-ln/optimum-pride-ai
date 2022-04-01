@@ -31,7 +31,7 @@ public class Shoot_OP : BaseState_OP
             //if the distance is further than 25 set the targets to null and wander again
             if (Vector3.Distance(Tank.gameObject.transform.position, enTankPosition.transform.position) > 25f)
             {
-                Tank.targetTanksFound = null;
+                Tank.targetTankPosition = null;
                 enTankPosition = null;
                 return typeof(Wander_OP);
             }
@@ -41,6 +41,12 @@ public class Shoot_OP : BaseState_OP
                 Tank.shoot();
                 return typeof(Escape_OP);
             }
+        }
+        else if(Tank.basePosition != null) 
+        {
+            Tank.ShootBase();
+            Tank.basePosition = null;
+            return typeof(Wander_OP);
         }
         return null;
     }

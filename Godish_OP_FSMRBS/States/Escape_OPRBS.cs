@@ -20,8 +20,8 @@ public class Escape_OPRBS : BaseState_OPRBS
 
         float perpendicular = -1.0f / ((enemyPosition.z - tankPosition.z) / (enemyPosition.x - tankPosition.x));
 
-        Tank.strafePositions[0] = tankPosition + Vector3.ClampMagnitude(new Vector3(8.0f ,0.0f, 8.0f * perpendicular),8);
-        Tank.strafePositions[1] = tankPosition + Vector3.ClampMagnitude(new Vector3(-8.0f ,0.0f, -8.0f * perpendicular),8);
+        Tank.strafePositions[0] = tankPosition + new Vector3(8.0f ,0.0f, 8.0f * perpendicular);
+        Tank.strafePositions[1] = tankPosition + new Vector3(-8.0f ,0.0f, -8.0f * perpendicular);
         
         Debug.Log("Escape State Entered");
 

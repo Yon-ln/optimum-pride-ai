@@ -39,11 +39,11 @@ public class Wander_OP : BaseState_OP
         {
             return typeof(FindFuel_OP);
         }
-        else if (loc != null && loc.gameObject.name == "HealthLocation_Loc")
+        else if (loc != null && loc.gameObject.name == "HealthLocation_Loc" && Tank.checkHealth() < 40)
         {
             return typeof(FindHealth_OP);
         }
-        else if (loc != null && loc.gameObject.name == "AmmoLocation_Loc")
+        else if (loc != null && loc.gameObject.name == "AmmoLocation_Loc" && Tank.checkAmmo() == 0)
         {
             return typeof(FindAmmo_OP);
         }
@@ -52,19 +52,32 @@ public class Wander_OP : BaseState_OP
             Tank.Wander();
         }
         GameObject enTankPosition;//gets tank position if there is a tank so that it doesn't call an error on every update
+        GameObject enBasePosition;
         if(Tank.targetTankPosition != null) 
         {
             enTankPosition = Tank.targetTankPosition;
             //if the tank is close than 25 units to the enemy it will start chasing otherwise set the targets to null
-            if (Vector3.Distance(Tank.gameObject.transform.position, enTankPosition.transform.position) < 25f)
+            if (Vector3.Distance(Tank.gameObject.transform.position, enTankPosition.transform.position) < 25f && Tank.checkAmmo() > 0)
             {
                 return typeof(Follow_OP);
             }
             else
             {
-                Tank.targetTanksFound = null;
+                Tank.targetTankPosition = null;
                 enTankPosition = null;
-                return null;
+            }
+        }
+        else if(Tank.basePosition != null || Tank.basesFound.Count > 0) 
+        {
+            enBasePosition = Tank.basePosition;
+            if (Vector3.Distance(Tank.gameObject.transform.position, enBasePosition.transform.position) < 50f && Tank.checkAmmo() > 0)
+            {
+                return typeof(Shoot_OP);
+            }
+            else 
+            {
+                Tank.basePosition = null;
+                enBasePosition = null;
             }
         }
         return null;

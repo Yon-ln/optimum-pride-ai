@@ -62,6 +62,8 @@ public class GodishTank_OP_FSM : AITank
         //On every update the tank will stored last known location of consumables which will be stored as pot dictionary members
         consumablesFound = GetAllConsumablesFound;
         targetTanksFound = GetAllTargetTanksFound;
+        basesFound = GetAllBasesFound;
+
         bool duplicate = false;
         foreach (GameObject consumable in consumablesFound.Keys) //It iterates through all the consumables found and stores them into it as long its not a dupe
         {
@@ -144,10 +146,21 @@ public class GodishTank_OP_FSM : AITank
     public void Wander() 
     {
         CirculateTank();
-        targetTanksFound = GetAllTargetTanksFound;
-        if(targetTanksFound.Count > 0 && targetTanksFound.First().Key != null) 
+        if(targetTanksFound.Count > 0) 
         {
             targetTankPosition = targetTanksFound.First().Key;
+        }
+        else 
+        {
+            targetTankPosition = null;
+        }
+        if(basesFound.Count > 0) 
+        {
+            basePosition = basesFound.First().Key;
+        }
+        else 
+        {
+            basePosition = null;
         }
     }
 
@@ -236,6 +249,15 @@ public class GodishTank_OP_FSM : AITank
             FireAtPoint(targetTankPosition);
         }
     }
+    //Gary
+    public void ShootBase() 
+    {
+        if (basePosition != null)
+        {
+            FireAtPoint(basePosition);
+        }
+    }
+
     public void escape()
     {
         FollowPathToRandomPoint(1f);
